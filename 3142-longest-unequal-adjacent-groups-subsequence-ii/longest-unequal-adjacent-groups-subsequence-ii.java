@@ -1,51 +1,43 @@
 class Solution {
     public List<String> getWordsInLongestSubsequence(String[] words, int[] groups) {
         int n = words.length;
-        int[] dp = new int[n];
-        int[] prev = new int[n];
-        Arrays.fill(dp, 1);
-        Arrays.fill(prev, -1);
+        Map<Long, List<Integer>> map = new HashMap();
+        
+        int[] ansNext = new int[n];
+        int[] lengths = new int[n];
+        
+        int ansIndex = 0;
 
-        List<List<String>> subsequences = new ArrayList<>();
-        int maxLen = 1;
+        Arrays.fill(ansNext, n);
 
-        for (int i = 0; i < n; i++) {
-            int lenI = words[i].length();
-            for (int j = 0; j < i; j++) {
-                if (groups[i] != groups[j] &&
-                        lenI == words[j].length() &&
-                        hammingDistance(words[i], words[j]) == 1) {
-                    if (dp[i] < dp[j] + 1) {
-                        dp[i] = dp[j] + 1;
-                        prev[i] = j;
-                    }
+        for (int left = n - 1; left >= 0; left--) {
+            String word = words[left];
+            int len = word.length();
+            int res = 1;
+            long completeMask = 0l;
+            long[] masks = new long[len];
+            for (int i = 0; i < len; i++) {
+                completeMask |= masks[i] = (long)(word.charAt(i) - 'a' + 1) << (5 * i);
+            }
+            for (int i = 0; i < len; i++) {
+                long targetMask = completeMask ^ masks[i];
+                List<Integer> queue = map.computeIfAbsent​(targetMask, (j) -> new ArrayList());
+                for (int idx : queue) {
+                    if (res >= lengths[idx] + 1 || groups[idx] == groups[left] ) continue;
+                    res = lengths[idx] + 1;
+                    ansNext[left] = idx;
                 }
+                queue.add(left);
             }
-            maxLen = Math.max(maxLen, dp[i]);
+            lengths[left] = res;
+            if (lengths[ansIndex] < res) ansIndex = left;
         }
 
-        for (int i = 0; i < n; i++) {
-            if (dp[i] == maxLen) {
-                LinkedList<String> path = new LinkedList<>();
-                int index = i;
-                while (index != -1) {
-                    path.addFirst(words[index]);
-                    index = prev[index];
-                }
-                subsequences.add(path);
-            }
+        List<String> ans = new ArrayList(lengths[ansIndex]);
+        for (int i = ansIndex; i < n; i = ansNext[i]) {
+            ans.add(words[i]);
         }
 
-        return subsequences.isEmpty() ? new ArrayList<>() : subsequences.get(0);
-    }
-
-    private int hammingDistance(String s1, String s2) {
-        int dist = 0;
-        for (int i = 0; i < s1.length(); i++) {
-            if (s1.charAt(i) != s2.charAt(i)) {
-                dist++;
-            }
-        }
-        return dist;
+        return ans;
     }
 }
