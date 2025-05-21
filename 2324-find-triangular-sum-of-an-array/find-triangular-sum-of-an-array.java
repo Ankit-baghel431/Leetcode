@@ -1,14 +1,11 @@
 class Solution {
     public int triangularSum(int[] nums) {
-        func(nums, 0, nums.length);
-        return nums[0];
-    }
-    private void func(int[] nums, int st, int end){
-        if(st == end) return;
-        for(int i=1; i<end; i++){
-            nums[i-1] = (nums[i]+nums[i-1])%10;
-        }
-        func(nums, st, end-1);
-    }
+        if (nums.length == 1) return nums[0];
 
+        int[] newArr = new int[nums.length - 1];
+        for (int j = 0; j < nums.length - 1; j++) {
+            newArr[j] = (nums[j] + nums[j + 1]) % 10;
+        }
+        return triangularSum(newArr);
+    }
 }
