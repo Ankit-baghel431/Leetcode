@@ -1,7 +1,8 @@
 class Solution {
     private int [][] dp ;
     public int minimumTotal(List<List<Integer>> triangle) {
-        dp = new int[201][10001];
+        int n = triangle.size();
+        dp = new int[n][n];
         for(int d[]:dp){
             Arrays.fill(d,-1);
         }
