@@ -1,22 +1,17 @@
 class Solution {
-    int [][] dp;
-    public int lengthOfLIS(int[] nums){
-        dp = new int[nums.length][nums.length+1];
-        for(int []d : dp){
-            Arrays.fill(d,-1);
+    public int lengthOfLIS(int[] nums) {
+        int n = nums.length;
+        int [][]dp = new int[n+1][n+1];
+        for(int i = n-1;i>=0;i--){
+            for(int j = i-1;j>=-1;j--){
+                int notTake = 0+dp[i+1][j+1];
+                int take = 0;
+                if(j == -1 || nums[j]<nums[i]){
+                    take = 1+dp[i+1][i+1];
+                }
+                dp[i][j+1] = Math.max(take,notTake);
+            }
         }
-        return solve(nums,0,-1);
-    }
-    int solve(int [] arr,int idx, int pre){
-        if(idx == arr.length) return 0;
-        if(dp[idx][pre+1] != -1){
-            return dp[idx][pre+1];
-        }
-        int notTake = 0+solve(arr,idx+1,pre);
-        int take = 0;
-        if(pre == -1 || arr[pre] < arr[idx]){
-            take = 1+solve(arr,idx+1,idx);
-        }
-        return dp[idx][pre+1] = Math.max(take,notTake);
+        return dp[0][0];
     }
 }
