@@ -1,14 +1,16 @@
 class Solution {
+    int []dp;
     public int climbStairs(int n) {
-        if(n<=1) return n;
-        int curr = 0;
-        int pre1 = 1;
-        int pre2 = 1;
-        for(int i = 1;i<n;i++){
-            curr = pre1+pre2;
-            pre2 = pre1;
-            pre1 = curr;
+        dp = new int[n+1];
+        Arrays.fill(dp,-1);
+        return solve(n);
+    }
+    int solve(int n){
+        if(n<=1) return 1;
+        if(dp[n]!=-1){
+            return dp[n];
         }
-        return curr;
+        int ways = solve(n-2)+solve(n-1);
+        return dp[n] = ways;
     }
 }
