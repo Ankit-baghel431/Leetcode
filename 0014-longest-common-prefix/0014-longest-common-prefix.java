@@ -3,19 +3,16 @@ class Solution {
         if(strs == null || strs.length == 0){
             return "";
         }
-        String result = strs[0];
-        int firlen = result.length();
-        for(int i = 1;i<strs.length;i++){
-            String s = strs[i];
-            while(firlen > s.length() || !result.equals(s.substring(0,firlen))){
-                firlen--;
-                if(firlen == 0){
-                    return "";
-                }
-                result = result.substring(0,firlen);
+        StringBuilder res = new StringBuilder();
+        Arrays.sort(strs);
+        char[] first = strs[0].toCharArray();
+        char[] last = strs[strs.length-1].toCharArray();
+        for(int i = 0;i<first.length;i++){
+            if(first[i] != last[i]){
+                break;
             }
+            res.append(first[i]);
         }
-        return result;
-        
+        return res.toString();
     }
 }
